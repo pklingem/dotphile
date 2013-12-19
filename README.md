@@ -7,7 +7,7 @@ manage your dotfiles with GNU Stow and Git
 
 # Assumptions
 
-* the `dotphile` executable is in your path
+* the `dotphile` executable is in your `$PATH`
 * your dotfiles are located at `~/dotfiles`
 * `git config --get github.user` returns a github profile with an accessible repository named __dofiles__
 
@@ -20,7 +20,7 @@ manage your dotfiles with GNU Stow and Git
 1.  ensure `~/dotfiles` is a clone of `git@github.com:pklingem/dotfiles`
 2.  ensure `~/dotfiles/vim` exists
 3.  ensure `~/.vimrc` is a symlink to `~/dotfiles/vim/.vimrc`
-4.  commit `~/dotfiles/vim`
+4.  commit changes to `~/dotfiles/vim`
 
 ### Arguments
 
