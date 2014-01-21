@@ -1,0 +1,53 @@
+#!/bin/sh
+
+add()
+{
+  package=$1
+  config=$2
+  PACKAGE_ROOT=~/dotfiles/$package
+  CONFIG_ROOT=$config
+  DOTFILES_PACKAGE_CONFIG_ROOT=${CONFIG_ROOT#~/}
+  PACKAGE_CONFIGURATION_ROOT=$PACKAGE_ROOT/$DOTFILES_PACKAGE_CONFIG_ROOT
+  echo mkdir -p $(dirname $PACKAGE_CONFIGURATION_ROOT)
+  echo mv $config $(dirname $PACKAGE_CONFIGURATION_ROOT)
+}
+
+link()
+{
+  stow $1 -d ~/dotfiles
+}
+
+linkall()
+{
+  find . -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
+    egrep -v '^\..*$' |\
+    xargs -I {} stow {} -d ~/dotfiles
+}
+
+args=`getopt la: $*`
+if [ $? -ne 0 ]
+then
+  echo ’Usage: ...’
+  exit 2
+fi
+set -- $args
+
+for i
+do
+  case "$i"
+  in
+    -a|--add)
+      package="$2"; shift; config="$3"; shift;
+
+      add $package $config
+      echo link $package
+
+      shift;;
+    -l|--link)
+      linkall
+
+      shift;;
+    --)
+      shift; break;;
+  esac
+done

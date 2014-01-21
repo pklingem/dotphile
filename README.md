@@ -7,6 +7,7 @@ manage your dotfiles with GNU Stow and Git
 
 # Assumptions
 
+* you have git installed
 * the `dotphile` executable is in your `$PATH`
 * your dotfiles are located at `~/dotfiles`
 * `git config --get github.user` returns a github profile with an accessible repository named __dofiles__
