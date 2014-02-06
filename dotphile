@@ -34,9 +34,14 @@ linkall()
 }
 
 args=`getopt la: $*`
-if [ $? -ne 0 ]
-then
+if [ $# -eq 0 ]; then
   echo "Usage: ..."
+  echo "-l"
+  echo "--link"
+  echo "    symlink all dotfiles"
+  echo "-a"
+  echo "--add"
+  echo "    store a configuration in the dotfiles folder and symlink it back to its original location"
   exit 2
 fi
 
