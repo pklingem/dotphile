@@ -1,6 +1,13 @@
 #!/bin/sh
 
+platform=`uname`
+
 command -v stow >/dev/null 2>&1 || { echo >&2 "GNU stow is not installed.  Aborting."; exit 1; }
+if [ "$platform" = "Darwin" ]; then
+  command -v brew >/dev/null 2>&1 || { echo >&2 "brew is not installed.  Aborting."; exit 1; }
+  command -v gfind >/dev/null 2>&1 || { echo >&2 "brew findutils is not installed.  Aborting."; exit 1; }
+  alias find='gfind'
+fi
 
 add()
 {
