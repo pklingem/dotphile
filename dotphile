@@ -9,8 +9,7 @@ if [ "$platform" = "Darwin" ]; then
   alias find='gfind'
 fi
 
-add()
-{
+function Dotphile__add() {
   package=$1
   config=$2
   PACKAGE_ROOT=~/dotfiles/$package
@@ -21,19 +20,22 @@ add()
   echo mv $config $(dirname $PACKAGE_CONFIGURATION_ROOT)
 }
 
-link()
-{
-  echo stow $1 -d ~/dotfiles
+function Dotphile__link() {
+  echo stow $1 --dir ~/dotfiles
 }
 
-linkall()
-{
-  find ~/dotfiles -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
-    egrep -v '^\..*$' |\
-    xargs -I {} stow {} -d ~/dotfiles
+function Dotphile__linkall() {
+  packages=$(find ~/dotfiles -maxdepth 1 -mindepth 1 -type d -printf '%f\n' | egrep -v '^\..*$')
+  for package in $packages; do
+    Dotphile__link $package
+  done
 }
 
-args=`getopt la: $*`
+function Dotphile__unlink() {
+  echo stow --dir ~/dotfiles --delete $1
+}
+
+args=`getopt lau: $*`
 if [ $# -eq 0 ]; then
   echo "Usage: ..."
   echo "-l"
@@ -42,6 +44,9 @@ if [ $# -eq 0 ]; then
   echo "-a"
   echo "--add"
   echo "    store a configuration in the dotfiles folder and symlink it back to its original location"
+  echo "-u"
+  echo "--unlink"
+  echo "    unlink a dotfile"
   exit 2
 fi
 
@@ -56,14 +61,19 @@ do
   case "$i"
   in
     -l|--link)
-      linkall
+      Dotphile__linkall
 
       shift;;
     -a|--add)
-      package="$2"; shift; config="$3"; shift;
+      Dotphile__add $3 $4
+      Dotphile__link $3
 
-      add $package $config
-      echo link $package
+      shift; shift;
+      ;;
+    -u|--unlink)
+      package="$2"; shift;
+
+      Dotphile__unlink $package
 
       shift;;
     --)
