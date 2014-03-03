@@ -1,5 +1,10 @@
 #!/bin/sh
 
+dotfiles_dir=$DOTFILES_DIR
+home_path=$HOME_PATH
+: ${ dotfiles_dir:="~/dotfiles" }
+: ${ home_path:="~/" }
+
 platform=`uname`
 
 command -v stow >/dev/null 2>&1 || { echo >&2 "GNU stow is not installed.  Aborting."; exit 1; }
@@ -8,6 +13,11 @@ if [ "$platform" = "Darwin" ]; then
   command -v gfind >/dev/null 2>&1 || { echo >&2 "brew findutils is not installed.  Aborting."; exit 1; }
   alias find='gfind'
 fi
+
+function Dotphile__pringConfig() {
+  echo dotfiles_dir=$dotfiles_dir
+  echo home_path=$home_path
+}
 
 function Dotphile__add() {
   package=$1
@@ -35,9 +45,12 @@ function Dotphile__unlink() {
   echo stow --dir ~/dotfiles --delete $1
 }
 
-args=`getopt lau: $*`
+args=`getopt lauc: $*`
 if [ $# -eq 0 ]; then
   echo "Usage: ..."
+  echo "-c"
+  echo "--config"
+  echo "    print the current configuration"
   echo "-l"
   echo "--link"
   echo "    symlink all dotfiles"
@@ -60,6 +73,9 @@ for i
 do
   case "$i"
   in
+    -c|--config)
+      Dotphile__printConfig
+      ;;
     -l|--link)
       Dotphile__linkall
 
