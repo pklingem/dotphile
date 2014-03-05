@@ -2,8 +2,8 @@
 
 dotfiles_dir=$DOTFILES_DIR
 home_path=$HOME_PATH
-: ${ dotfiles_dir:="~/dotfiles" }
-: ${ home_path:="~/" }
+: ${dotfiles_dir:="~/dotfiles"}
+: ${home_path:="~/"}
 
 platform=`uname`
 
@@ -14,7 +14,7 @@ if [ "$platform" = "Darwin" ]; then
   alias find='gfind'
 fi
 
-function Dotphile__pringConfig() {
+function Dotphile__printConfig() {
   echo dotfiles_dir=$dotfiles_dir
   echo home_path=$home_path
 }
@@ -45,7 +45,7 @@ function Dotphile__unlink() {
   echo stow --dir ~/dotfiles --delete $1
 }
 
-args=`getopt lauc: $*`
+args=`getopt clau: $*`
 if [ $# -eq 0 ]; then
   echo "Usage: ..."
   echo "-c"
@@ -75,7 +75,8 @@ do
   in
     -c|--config)
       Dotphile__printConfig
-      ;;
+
+      shift;;
     -l|--link)
       Dotphile__linkall
 

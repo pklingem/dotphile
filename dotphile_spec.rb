@@ -4,17 +4,15 @@ ENV['HOME_PATH'] = File.join('.', 'temp/home/username')
 describe 'dotphile' do
   describe '-c' do
     before do
-      @output = `./dotphile -c`
+      @output = %x{ ./dotphile -c }
       @status = $?
     end
 
     context 'output' do
-      subject { @output }
+      subject { @output.split("\n") }
 
-      it { should == '' }
-
-      specify { expect { subject.grep(/dotfiles_dir/).split('=').last }.to eq './spec/fixtures/dotfiles' }
-      specify { expect { subject.grep(/home_path/).split('=').last }.to eq './temp/home/username' }
+      it { should include 'dotfiles_dir=./spec/fixtures/dotfiles' }
+      it { should include 'home_path=./temp/home/username' }
     end
 
     context 'status' do
@@ -31,13 +29,12 @@ describe 'dotphile' do
         let(:configuration_file_path) { }
 
         before do
-          @output = `./dotphile -a #{package} #{configuration_file_path}`
+          @output = %x{ ./dotphile -a #{package} #{configuration_file_path} }
           @status = $?
         end
 
         context 'output' do
           subject { @output }
-
         end
 
         context 'status' do
