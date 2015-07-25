@@ -17,13 +17,13 @@ add()
   CONFIG_ROOT=$config
   DOTFILES_PACKAGE_CONFIG_ROOT=${CONFIG_ROOT#~/}
   PACKAGE_CONFIGURATION_ROOT=$PACKAGE_ROOT/$DOTFILES_PACKAGE_CONFIG_ROOT
-  echo mkdir -p $(dirname $PACKAGE_CONFIGURATION_ROOT)
-  echo mv $config $(dirname $PACKAGE_CONFIGURATION_ROOT)
+  mkdir -p $(dirname $PACKAGE_CONFIGURATION_ROOT)
+  mv $config $(dirname $PACKAGE_CONFIGURATION_ROOT)
 }
 
 link()
 {
-  echo stow $1 -d ~/dotfiles
+  stow $1 -d ~/dotfiles
 }
 
 linkall()
@@ -63,7 +63,7 @@ do
       package="$2"; shift; config="$3"; shift;
 
       add $package $config
-      echo link $package
+      link $package
 
       shift;;
     --)
