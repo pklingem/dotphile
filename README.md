@@ -34,3 +34,10 @@ manage your dotfiles with GNU Stow and Git
 2.  config file
 
     full path to the file to be added to the configuration
+
+
+### Notes
+
+removing linked dotfiles, this is bad, should use unstow
+
+    ls -la --color=never | grep dotfiles --color=none | tr -s ' ' | cut -d ' ' -f 9 | xargs rm
