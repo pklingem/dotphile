@@ -26,7 +26,12 @@ link()
   stow $1 -d ~/dotfiles
 }
 
-linkall()
+updateSubmodules()
+{
+  (cd ~/dotfiles && git submodule init && git submodule update)
+}
+
+linkAll()
 {
   find ~/dotfiles -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
     egrep -v '^\..*$' |\
@@ -56,7 +61,8 @@ do
   case "$i"
   in
     -l|--link)
-      linkall
+      updateSubmodules
+      linkAll
 
       shift;;
     -a|--add)
