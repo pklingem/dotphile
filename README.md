@@ -99,14 +99,29 @@ When you run `dotphile -l`, it creates:
 
 ## Configuration
 
-By default, dotphile expects your dotfiles repository at:
+### Dotfiles Directory
+
+By default, dotphile uses `~/dotfiles` as the dotfiles directory. You can customize this using the `DOTPHILE_PATH` environment variable:
+
+```bash
+# Set for a single command
+DOTPHILE_PATH=~/my-dotfiles dotphile -l
+
+# Or export it in your shell profile
+export DOTPHILE_PATH=~/my-dotfiles
+dotphile -l
+```
+
+### Git Repository
+
+By default, dotphile clones from:
 ```
 git@github.com:pklingem/dotfiles
 ```
 
-To use your own repository, edit line 54 in the `dotphile` script:
+To use your own repository, edit line 57 in the `dotphile` script:
 ```bash
-git clone git@github.com:yourusername/dotfiles ~/dotfiles
+git clone git@github.com:yourusername/dotfiles $DOTFILES_DIR
 ```
 
 ## License

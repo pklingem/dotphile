@@ -9,11 +9,14 @@ if [ "$platform" = "Darwin" ]; then
   alias find='gfind'
 fi
 
+# Use DOTPHILE_PATH environment variable or default to ~/dotfiles
+DOTFILES_DIR="${DOTPHILE_PATH:-$HOME/dotfiles}"
+
 add()
 {
   package=$1
   config=$2
-  PACKAGE_ROOT=~/dotfiles/$package
+  PACKAGE_ROOT=$DOTFILES_DIR/$package
   CONFIG_ROOT=$config
   DOTFILES_PACKAGE_CONFIG_ROOT=${CONFIG_ROOT#~/}
   PACKAGE_CONFIGURATION_ROOT=$PACKAGE_ROOT/$DOTFILES_PACKAGE_CONFIG_ROOT
@@ -23,19 +26,19 @@ add()
 
 link()
 {
-  stow $1 -d ~/dotfiles
+  stow $1 -d $DOTFILES_DIR
 }
 
 updateSubmodules()
 {
-  (cd ~/dotfiles && git submodule init && git submodule update)
+  (cd $DOTFILES_DIR && git submodule init && git submodule update)
 }
 
 linkAll()
 {
-  find ~/dotfiles -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
+  find $DOTFILES_DIR -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
     grep -E -v '^\..*$' |\
-    xargs -I {} stow {} -d ~/dotfiles
+    xargs -I {} stow {} -d $DOTFILES_DIR
 }
 
 args=`getopt la: $*`
@@ -50,8 +53,8 @@ if [ $# -eq 0 ]; then
   exit 2
 fi
 
-if [ ! -d ~/dotfiles ]; then
-  git clone git@github.com:pklingem/dotfiles ~/dotfiles
+if [ ! -d $DOTFILES_DIR ]; then
+  git clone git@github.com:pklingem/dotfiles $DOTFILES_DIR
 fi
 
 set -- $args
