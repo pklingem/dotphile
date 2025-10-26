@@ -114,14 +114,26 @@ dotphile -l
 
 ### Git Repository
 
-By default, dotphile clones from:
-```
-git@github.com:pklingem/dotfiles
+By default, dotphile clones from `git@github.com:pklingem/dotfiles`. You can customize this using the `DOTPHILE_GIT_REPO` environment variable:
+
+```bash
+# Set for a single command
+DOTPHILE_GIT_REPO=git@github.com:yourusername/dotfiles dotphile -l
+
+# Or export it in your shell profile
+export DOTPHILE_GIT_REPO=git@github.com:yourusername/dotfiles
+dotphile -l
+
+# Works with HTTPS URLs too
+export DOTPHILE_GIT_REPO=https://github.com/yourusername/dotfiles.git
 ```
 
-To use your own repository, edit line 57 in the `dotphile` script:
+You can also combine both environment variables:
+
 ```bash
-git clone git@github.com:yourusername/dotfiles $DOTFILES_DIR
+export DOTPHILE_PATH=~/my-dotfiles
+export DOTPHILE_GIT_REPO=git@github.com:yourusername/dotfiles
+dotphile -l
 ```
 
 ## License

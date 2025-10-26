@@ -12,6 +12,9 @@ fi
 # Use DOTPHILE_PATH environment variable or default to ~/dotfiles
 DOTFILES_DIR="${DOTPHILE_PATH:-$HOME/dotfiles}"
 
+# Use DOTPHILE_GIT_REPO environment variable or default to pklingem/dotfiles
+DOTFILES_GIT_REPO="${DOTPHILE_GIT_REPO:-git@github.com:pklingem/dotfiles}"
+
 add()
 {
   package=$1
@@ -54,7 +57,7 @@ if [ $# -eq 0 ]; then
 fi
 
 if [ ! -d $DOTFILES_DIR ]; then
-  git clone git@github.com:pklingem/dotfiles $DOTFILES_DIR
+  git clone $DOTFILES_GIT_REPO $DOTFILES_DIR
 fi
 
 set -- $args
