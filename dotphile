@@ -103,7 +103,6 @@ linkAll()
   fi
 }
 
-args=`getopt la: $*`
 if [ $# -eq 0 ]; then
   echo "Usage: dotphile [OPTION]"
   echo ""
@@ -128,25 +127,28 @@ if [ ! -d $DOTFILES_DIR ]; then
   git clone $DOTFILES_GIT_REPO $DOTFILES_DIR
 fi
 
-set -- $args
-
-for i
-do
-  case "$i"
-  in
+# Parse arguments
+while [ $# -gt 0 ]; do
+  case "$1" in
     -l|--link)
       updateSubmodules
       linkAll
-
-      shift;;
+      shift
+      ;;
     -a|--add)
-      package="$2"; shift; config="$3"; shift;
-
-      add $package $config
-      link $package
-
-      shift;;
-    --)
-      shift; break;;
+      if [ $# -lt 3 ]; then
+        echo >&2 "Error: -a requires PACKAGE and PATH arguments"
+        exit 1
+      fi
+      package="$2"
+      config="$3"
+      add "$package" "$config"
+      link "$package"
+      shift 3
+      ;;
+    *)
+      echo >&2 "Error: Unknown option: $1"
+      exit 1
+      ;;
   esac
 done
