@@ -29,19 +29,42 @@ add()
 
 link()
 {
-  stow $1 -d $DOTFILES_DIR
+  if ! stow $1 -d $DOTFILES_DIR 2>&1; then
+    echo >&2 "Error: Failed to link package '$1'. There may be conflicts with existing files."
+    echo >&2 "Run 'stow $1 -d $DOTFILES_DIR -n' to see what would be done."
+    return 1
+  fi
+  echo "Successfully linked package '$1'"
 }
 
 updateSubmodules()
 {
-  (cd $DOTFILES_DIR && git submodule init && git submodule update)
+  if ! (cd $DOTFILES_DIR && git submodule init && git submodule update); then
+    echo >&2 "Warning: Failed to update git submodules"
+    return 1
+  fi
 }
 
 linkAll()
 {
+  echo "Linking all packages from $DOTFILES_DIR..."
+  failed_packages=""
+
   find $DOTFILES_DIR -maxdepth 1 -mindepth 1 -type d -printf '%f\n' |\
     grep -E -v '^\..*$' |\
-    xargs -I {} stow {} -d $DOTFILES_DIR
+    while read package; do
+      if stow "$package" -d $DOTFILES_DIR 2>&1; then
+        echo "  ✓ Linked $package"
+      else
+        echo "  ✗ Failed to link $package" >&2
+        failed_packages="$failed_packages $package"
+      fi
+    done
+
+  if [ -n "$failed_packages" ]; then
+    echo >&2 "Warning: Some packages failed to link:$failed_packages"
+    echo >&2 "There may be conflicts with existing files."
+  fi
 }
 
 args=`getopt la: $*`
