@@ -105,13 +105,22 @@ linkAll()
 
 args=`getopt la: $*`
 if [ $# -eq 0 ]; then
-  echo "Usage: ..."
-  echo "-l"
-  echo "--link"
-  echo "    symlink all dotfiles"
-  echo "-a"
-  echo "--add"
-  echo "    store a configuration in the dotfiles folder and symlink it back to its original location"
+  echo "Usage: dotphile [OPTION]"
+  echo ""
+  echo "Manage your dotfiles with GNU Stow and Git"
+  echo ""
+  echo "Options:"
+  echo "  -l, --link              Symlink all dotfiles packages to home directory"
+  echo "  -a, --add PACKAGE PATH  Add configuration file/directory to dotfiles package"
+  echo ""
+  echo "Environment Variables:"
+  echo "  DOTPHILE_PATH           Directory for dotfiles (default: ~/dotfiles)"
+  echo "  DOTPHILE_GIT_REPO       Git repository URL (default: git@github.com:pklingem/dotfiles)"
+  echo ""
+  echo "Examples:"
+  echo "  dotphile -l                    # Link all packages"
+  echo "  dotphile -a vim ~/.vimrc       # Add .vimrc to vim package"
+  echo "  DOTPHILE_PATH=~/my-dots dotphile -l"
   exit 2
 fi
 
