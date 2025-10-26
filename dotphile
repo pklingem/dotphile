@@ -19,12 +19,48 @@ add()
 {
   package=$1
   config=$2
+
+  # Validate inputs
+  if [ -z "$package" ]; then
+    echo >&2 "Error: Package name is required"
+    return 1
+  fi
+
+  if [ -z "$config" ]; then
+    echo >&2 "Error: Config path is required"
+    return 1
+  fi
+
+  # Safely expand tilde if present
+  case "$config" in
+    ~/*) config="$HOME/${config#~/}" ;;
+    ~) config="$HOME" ;;
+  esac
+
+  # Check if config file/directory exists
+  if [ ! -e "$config" ]; then
+    echo >&2 "Error: Configuration file or directory '$config' does not exist"
+    return 1
+  fi
+
   PACKAGE_ROOT=$DOTFILES_DIR/$package
   CONFIG_ROOT=$config
-  DOTFILES_PACKAGE_CONFIG_ROOT=${CONFIG_ROOT#~/}
+  DOTFILES_PACKAGE_CONFIG_ROOT=${CONFIG_ROOT#$HOME/}
   PACKAGE_CONFIGURATION_ROOT=$PACKAGE_ROOT/$DOTFILES_PACKAGE_CONFIG_ROOT
-  mkdir -p $(dirname $PACKAGE_CONFIGURATION_ROOT)
-  mv $config $(dirname $PACKAGE_CONFIGURATION_ROOT)
+
+  # Create destination directory
+  if ! mkdir -p "$(dirname "$PACKAGE_CONFIGURATION_ROOT")"; then
+    echo >&2 "Error: Failed to create directory $(dirname "$PACKAGE_CONFIGURATION_ROOT")"
+    return 1
+  fi
+
+  # Move the config file/directory
+  if ! mv "$config" "$(dirname "$PACKAGE_CONFIGURATION_ROOT")"; then
+    echo >&2 "Error: Failed to move '$config' to $(dirname "$PACKAGE_CONFIGURATION_ROOT")"
+    return 1
+  fi
+
+  echo "Added '$config' to package '$package' in $DOTFILES_DIR"
 }
 
 link()
